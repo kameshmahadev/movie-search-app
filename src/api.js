@@ -1,18 +1,17 @@
 // src/api.js
-
-const API_KEY = 'c6bb7eb3'; // ⚡ Replace with your real OMDB API key
+const API_KEY = "c6bb7eb3"; // Make sure your API Key is correct.
 
 export const fetchMovies = async (searchTerm) => {
     try {
-        const response = await fetch(`https://www.omdbapi.com/?apikey=${API_KEY}&s=${searchTerm}`);
-        const data = await response.json();
+        const res = await fetch(`https://www.omdbapi.com/?apikey=${API_KEY}&s=${searchTerm}`);
+        const data = await res.json();
         if (data.Response === "True") {
-            return data.Search;
+            return data.Search; // Very important: return data.Search (array of movies)
         } else {
-            return []; // Return empty array if no movies found
+            return []; // No movies found
         }
     } catch (error) {
-        console.error('API Error:', error);
+        console.error('Failed to fetch movies:', error);
         return [];
     }
 };
