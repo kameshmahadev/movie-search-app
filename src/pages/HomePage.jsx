@@ -29,7 +29,8 @@ const HomePage = () => {
                 setTotalResults(0);
                 setError(data.Error || "No movies found.");
             }
-        } catch {
+        } catch (err) {
+            setMovies([]);
             setError("Something went wrong. Please try again later.");
         }
     };
@@ -47,12 +48,14 @@ const HomePage = () => {
 
     const addToFavorites = (movie) => {
         if (!favorites.some((fav) => fav.imdbID === movie.imdbID)) {
-            setFavorites([...favorites, movie]);
+            const updated = [...favorites, movie];
+            setFavorites(updated);
         }
     };
 
     const removeFromFavorites = (id) => {
-        setFavorites(favorites.filter((fav) => fav.imdbID !== id));
+        const updated = favorites.filter((fav) => fav.imdbID !== id);
+        setFavorites(updated);
     };
 
     useEffect(() => {

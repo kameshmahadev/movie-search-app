@@ -1,6 +1,8 @@
+// src/pages/MovieDetail.jsx
+
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { fetchMovieById } from '../services/api';
+import { fetchMovieDetails } from '../api/omdbApi';
 
 const MovieDetail = () => {
     const { id } = useParams();
@@ -10,14 +12,10 @@ const MovieDetail = () => {
     useEffect(() => {
         const getMovie = async () => {
             try {
-                const data = await fetchMovieById(id);
-                if (data.Response === 'True') {
-                    setMovie(data);
-                } else {
-                    setError(data.Error);
-                }
+                const data = await fetchMovieDetails(id);
+                setMovie(data);
             } catch (err) {
-                setError('Something went wrong');
+                setError('Failed to load movie details.');
             }
         };
         getMovie();

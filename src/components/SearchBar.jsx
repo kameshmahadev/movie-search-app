@@ -1,5 +1,3 @@
-// src/components/SearchBar.jsx
-
 import React from 'react';
 
 const SearchBar = ({ searchTerm, setSearchTerm, onSearch }) => {
@@ -9,10 +7,13 @@ const SearchBar = ({ searchTerm, setSearchTerm, onSearch }) => {
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Search movies..."
+                placeholder="Search for movies, series, episodes..."
                 className="w-full p-2 border border-gray-300 rounded"
             />
-            <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded">
+            <button
+                type="submit"
+                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            >
                 Search
             </button>
         </form>

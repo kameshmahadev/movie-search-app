@@ -1,24 +1,26 @@
 // src/api/omdbApi.js
 
 const API_KEY = process.env.REACT_APP_OMDB_API_KEY;
+console.log("✅ OMDB API Key loaded:", API_KEY);
 const BASE_URL = 'https://www.omdbapi.com/';
 
 /**
- * Search for movies by title and optional type.
- * @param {string} query - The search term.
- * @param {number} page - The page number for pagination.
- * @param {string} type - The type filter (e.g., movie, series, episode).
- * @returns {Promise<Object>} - The search results.
+ * Search for movies by title, type, and page.
+ * @param {string} query - Movie title to search.
+ * @param {string} type - Type filter (movie, series, episode).
+ * @param {number} page - Page number for pagination.
+ * @returns {Promise<Object>} - OMDB response object.
  */
-export const fetchMovies = async (query, page = 1, type = '') => {
+export const fetchMovies = async (query, type = '', page = 1) => {
     try {
+        if (!query) throw new Error("Search term is required.");
         let url = `${BASE_URL}?apikey=${API_KEY}&s=${encodeURIComponent(query)}&page=${page}`;
-        if (type) {
-            url += `&type=${type}`;
-        }
+        if (type) url += `&type=${type}`;
+
         const response = await fetch(url);
         const data = await response.json();
-        if (data.Response === 'True') {
+
+        if (data.Response === "True") {
             return data;
         } else {
             throw new Error(data.Error);
@@ -29,15 +31,16 @@ export const fetchMovies = async (query, page = 1, type = '') => {
 };
 
 /**
- * Fetch detailed information about a specific movie by IMDb ID.
- * @param {string} id - The IMDb ID of the movie.
- * @returns {Promise<Object>} - The movie details.
+ * Get movie details by IMDb ID.
+ * @param {string} id - IMDb ID.
+ * @returns {Promise<Object>} - Movie details.
  */
 export const fetchMovieDetails = async (id) => {
     try {
         const response = await fetch(`${BASE_URL}?apikey=${API_KEY}&i=${id}&plot=full`);
         const data = await response.json();
-        if (data.Response === 'True') {
+
+        if (data.Response === "True") {
             return data;
         } else {
             throw new Error(data.Error);
