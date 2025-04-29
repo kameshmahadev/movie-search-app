@@ -1,26 +1,18 @@
-import React from "react";
-
-const SearchBar = ({ searchTerm, type, onSearch, onTypeChange }) => {
+// src/components/SearchBar.jsx
+const SearchBar = ({ searchTerm, setSearchTerm, onSearch }) => {
     return (
-        <form onSubmit={onSearch} className="flex flex-col md:flex-row items-center gap-4 mb-6">
+        <form onSubmit={onSearch} className="flex gap-2 mb-4">
             <input
-                name="search"
                 type="text"
-                defaultValue={searchTerm}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Search movies..."
-                className="p-2 border rounded w-full md:w-1/2"
+                className="border px-4 py-2 rounded w-full"
             />
-            <select
-                value={type}
-                onChange={onTypeChange}
-                className="p-2 border rounded"
+            <button
+                type="submit"
+                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
             >
-                <option value="">All</option>
-                <option value="movie">Movie</option>
-                <option value="series">Series</option>
-                <option value="episode">Episode</option>
-            </select>
-            <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">
                 Search
             </button>
         </form>

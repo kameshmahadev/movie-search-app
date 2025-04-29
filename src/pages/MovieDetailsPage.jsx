@@ -1,87 +1,54 @@
 // src/pages/MovieDetailsPage.jsx
-
-import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import Loading from "../components/Loading";
-
-const API_KEY = "c6bb7eb3"; // Your API Key
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { getMovieDetails } from "../api/omdbApi";
 
 const MovieDetailsPage = () => {
     const { id } = useParams();
-    const navigate = useNavigate();
     const [movie, setMovie] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
+
+    const fetchMovieDetails = async () => {
+        try {
+            const data = await getMovieDetails(id);
+            if (data.Response === "True") {
+                setMovie(data);
+                setError("");
+            } else {
+                setError(data.Error || "Movie not found");
+            }
+        } catch (error) {
+            setError("Failed to fetch movie details.");
+        }
+    };
 
     useEffect(() => {
-        const fetchMovie = async () => {
-            try {
-                const res = await fetch(`https://www.omdbapi.com/?apikey=${API_KEY}&i=${id}&plot=full`);
-                const data = await res.json();
-                setMovie(data);
-            } catch (error) {
-                console.error(error);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchMovie();
+        fetchMovieDetails();
     }, [id]);
 
-    const handleBack = () => {
-        const searchQuery = localStorage.getItem("lastSearch") || "";
-        if (searchQuery) {
-            navigate(`/movies?search=${encodeURIComponent(searchQuery)}`);
-        } else {
-            navigate("/movies");
-        }
-    };
+    if (error) {
+        return <p className="text-red-500 text-center mt-4">{error}</p>;
+    }
 
-    const handleAddToFavorites = () => {
-        const storedFavorites = JSON.parse(localStorage.getItem("favorites")) || [];
-        if (!storedFavorites.find((fav) => fav.imdbID === movie.imdbID)) {
-            storedFavorites.push(movie);
-            localStorage.setItem("favorites", JSON.stringify(storedFavorites));
-            alert("Movie added to favorites!");
-        } else {
-            alert("This movie is already in your favorites!");
-        }
-    };
-
-    if (loading) return <Loading />;
-    if (!movie) return <div className="text-center mt-10">Movie not found</div>;
+    if (!movie) {
+        return <p className="text-center mt-4">Loading...</p>;
+    }
 
     return (
-        <div className="flex justify-center items-center min-h-screen bg-gray-100 p-4">
-            <div className="bg-white shadow-lg rounded-lg p-6 max-w-md w-full">
-                {movie.Poster && movie.Poster !== "N/A" && (
-                    <img
-                        src={movie.Poster}
-                        alt={movie.Title}
-                        className="w-full h-auto mb-4 rounded"
-                    />
-                )}
-                <h1 className="text-2xl font-bold mb-2">{movie.Title}</h1>
-                <p className="text-gray-600 text-sm mb-4">{movie.Plot}</p>
-                <div className="text-sm text-gray-500">
-                    <p><span className="font-semibold">Year:</span> {movie.Year}</p>
-                    <p><span className="font-semibold">Genre:</span> {movie.Genre}</p>
-                    <p><span className="font-semibold">Director:</span> {movie.Director}</p>
-                    <p><span className="font-semibold">Actors:</span> {movie.Actors}</p>
-                </div>
-                <div className="mt-4 flex space-x-4">
-                    <button
-                        onClick={handleBack}
-                        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700"
-                    >
-                        Back to Movies
-                    </button>
-                    <button
-                        onClick={handleAddToFavorites}
-                        className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-700"
-                    >
-                        Add to Favorites
-                    </button>
-                </div>
+        <div className="p-6 flex flex-col md:flex-row gap-8">
+            <img
+                src={movie.Poster !== "N/A" ? movie.Poster : "/no-image.png"}
+                alt={movie.Title}
+                className="w-64 h-auto rounded"
+            />
+            <div>
+                <h1 className="text-3xl font-bold mb-4">{movie.Title}</h1>
+                <p><strong>Year:</strong> {movie.Year}</p>
+                <p><strong>Genre:</strong> {movie.Genre}</p>
+                <p><strong>Plot:</strong> {movie.Plot}</p>
+                <p><strong>Cast:</strong> {movie.Actors}</p>
+                <p><strong>IMDB Rating:</strong> {movie.imdbRating}</p>
+                <p><strong>Type:</strong> {movie.Type}</p>
             </div>
         </div>
     );
