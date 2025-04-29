@@ -1,34 +1,18 @@
-import { useState } from 'react';
+// src/components/SearchBar.jsx
 
-const SearchBar = ({ onSearch }) => {
-    const [searchTerm, setSearchTerm] = useState('');
-    const [type, setType] = useState('');
+import React from 'react';
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        onSearch(searchTerm, type);
-    };
-
+const SearchBar = ({ searchTerm, setSearchTerm, onSearch }) => {
     return (
-        <form onSubmit={handleSubmit} className="flex gap-2 items-center mb-4">
+        <form onSubmit={onSearch} className="flex gap-2 mb-4">
             <input
                 type="text"
-                placeholder="Search movies..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="border rounded p-2"
+                placeholder="Search movies..."
+                className="w-full p-2 border border-gray-300 rounded"
             />
-            <select
-                value={type}
-                onChange={(e) => setType(e.target.value)}
-                className="border rounded p-2"
-            >
-                <option value="">All</option>
-                <option value="movie">Movie</option>
-                <option value="series">Series</option>
-                <option value="episode">Episode</option>
-            </select>
-            <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">
+            <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded">
                 Search
             </button>
         </form>

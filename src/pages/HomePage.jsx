@@ -1,6 +1,5 @@
-// src/pages/HomePage.jsx
 import { useState, useEffect } from "react";
-import { fetchMovies } from "../api/omdbApi"; // ✅ Updated import
+import { fetchMovies } from "../api/omdbApi";
 import SearchBar from "../components/SearchBar";
 import FilterDropdown from "../components/FilterDropdown";
 import MovieCard from "../components/MovieCard";
@@ -14,13 +13,13 @@ const HomePage = () => {
     const [totalResults, setTotalResults] = useState(0);
     const [error, setError] = useState("");
     const [favorites, setFavorites] = useState(() => {
-        const storedFavorites = localStorage.getItem("favorites");
-        return storedFavorites ? JSON.parse(storedFavorites) : [];
+        const stored = localStorage.getItem("favorites");
+        return stored ? JSON.parse(stored) : [];
     });
 
     const fetchMovieList = async (page = 1) => {
         try {
-            const data = await fetchMovies(searchTerm, selectedType, page); // ✅ Updated function name
+            const data = await fetchMovies(searchTerm, selectedType, page);
             if (data.Response === "True") {
                 setMovies(data.Search);
                 setTotalResults(Number(data.totalResults));
@@ -28,12 +27,10 @@ const HomePage = () => {
             } else {
                 setMovies([]);
                 setTotalResults(0);
-                setError(data.Error || "No movies found");
+                setError(data.Error || "No movies found.");
             }
-        } catch (error) {
-            setMovies([]);
-            setTotalResults(0);
-            setError("Something went wrong. Try again later.");
+        } catch {
+            setError("Something went wrong. Please try again later.");
         }
     };
 
@@ -48,6 +45,16 @@ const HomePage = () => {
         fetchMovieList(page);
     };
 
+    const addToFavorites = (movie) => {
+        if (!favorites.some((fav) => fav.imdbID === movie.imdbID)) {
+            setFavorites([...favorites, movie]);
+        }
+    };
+
+    const removeFromFavorites = (id) => {
+        setFavorites(favorites.filter((fav) => fav.imdbID !== id));
+    };
+
     useEffect(() => {
         if (searchTerm) {
             fetchMovieList(currentPage);
@@ -57,17 +64,6 @@ const HomePage = () => {
     useEffect(() => {
         localStorage.setItem("favorites", JSON.stringify(favorites));
     }, [favorites]);
-
-    const addToFavorites = (movie) => {
-        if (!favorites.some(fav => fav.imdbID === movie.imdbID)) {
-            setFavorites([...favorites, movie]);
-        }
-    };
-
-    const removeFromFavorites = (id) => {
-        const updatedFavorites = favorites.filter(fav => fav.imdbID !== id);
-        setFavorites(updatedFavorites);
-    };
 
     const totalPages = Math.ceil(totalResults / 10);
 
@@ -82,23 +78,18 @@ const HomePage = () => {
                 selectedType={selectedType}
                 setSelectedType={setSelectedType}
             />
-
-            {error && (
-                <p className="text-red-500 text-center my-4">{error}</p>
-            )}
-
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-4">
+            {error && <p className="text-red-500 text-center mt-4">{error}</p>}
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-6">
                 {movies.map((movie) => (
                     <MovieCard
                         key={movie.imdbID}
                         movie={movie}
                         addToFavorites={addToFavorites}
                         removeFromFavorites={removeFromFavorites}
-                        isFavorite={favorites.some(fav => fav.imdbID === movie.imdbID)}
+                        isFavorite={favorites.some((fav) => fav.imdbID === movie.imdbID)}
                     />
                 ))}
             </div>
-
             {movies.length > 0 && (
                 <Pagination
                     currentPage={currentPage}

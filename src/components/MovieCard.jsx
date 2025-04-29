@@ -1,23 +1,27 @@
-import useFavorites from '../hooks/useFavorites';
+// src/components/MovieCard.jsx
 
-const MovieCard = ({ movie }) => {
-    const { addFavorite, removeFavorite, isFavorite } = useFavorites();
+import React from 'react';
 
-    const toggleFavorite = () => {
-        isFavorite(movie.imdbID)
-            ? removeFavorite(movie.imdbID)
-            : addFavorite(movie);
+const MovieCard = ({ movie, addToFavorites, removeFromFavorites, isFavorite }) => {
+    const handleFavoriteClick = () => {
+        isFavorite ? removeFromFavorites(movie.imdbID) : addToFavorites(movie);
     };
 
     return (
-        <div className="border rounded p-4">
-            <img src={movie.Poster} alt={movie.Title} className="w-full h-auto" />
-            <h2 className="mt-2 font-semibold text-lg">{movie.Title}</h2>
+        <div className="bg-white rounded shadow p-4 flex flex-col">
+            <img
+                src={movie.Poster !== 'N/A' ? movie.Poster : '/no-image.png'}
+                alt={movie.Title}
+                className="h-60 object-cover mb-2 rounded"
+            />
+            <h3 className="font-bold text-lg">{movie.Title}</h3>
+            <p className="text-sm text-gray-600">{movie.Year}</p>
             <button
-                onClick={toggleFavorite}
-                className="mt-2 text-sm bg-green-500 text-white px-2 py-1 rounded"
+                onClick={handleFavoriteClick}
+                className={`mt-2 px-3 py-1 rounded ${isFavorite ? 'bg-red-500 text-white' : 'bg-green-500 text-white'
+                    }`}
             >
-                {isFavorite(movie.imdbID) ? 'Remove from Favorites' : 'Add to Favorites'}
+                {isFavorite ? 'Remove Favorite' : 'Add to Favorites'}
             </button>
         </div>
     );

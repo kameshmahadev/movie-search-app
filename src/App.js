@@ -1,5 +1,4 @@
 // src/App.jsx
-
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 import HomePage from "./pages/HomePage";
@@ -15,15 +14,11 @@ const App = () => {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/movies" element={<MoviesPage />} />
-        <Route path="/movie/:id" element={<MovieDetailsPage />} /> {/* ✅ Correct path /movie/:id */}
+        <Route path="/movie/:id" element={<MovieDetailsPage />} />
         <Route path="/favorites" element={<FavoritesPage />} />
         <Route
           path="*"
-          element={
-            <div className="text-center text-2xl mt-10">
-              404 Page Not Found
-            </div>
-          }
+          element={<div className="text-center text-2xl mt-10">404 Page Not Found</div>}
         />
       </Routes>
     </>
