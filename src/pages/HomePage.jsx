@@ -1,6 +1,6 @@
 // src/pages/HomePage.jsx
 import { useState, useEffect } from "react";
-import { searchMovies } from "../api/omdbApi";
+import { fetchMovies } from "../api/omdbApi"; // ✅ Updated import
 import SearchBar from "../components/SearchBar";
 import FilterDropdown from "../components/FilterDropdown";
 import MovieCard from "../components/MovieCard";
@@ -18,9 +18,9 @@ const HomePage = () => {
         return storedFavorites ? JSON.parse(storedFavorites) : [];
     });
 
-    const fetchMovies = async (page = 1) => {
+    const fetchMovieList = async (page = 1) => {
         try {
-            const data = await searchMovies(searchTerm, selectedType, page);
+            const data = await fetchMovies(searchTerm, selectedType, page); // ✅ Updated function name
             if (data.Response === "True") {
                 setMovies(data.Search);
                 setTotalResults(Number(data.totalResults));
@@ -40,17 +40,17 @@ const HomePage = () => {
     const handleSearch = (e) => {
         e.preventDefault();
         setCurrentPage(1);
-        fetchMovies(1);
+        fetchMovieList(1);
     };
 
     const handlePageChange = (page) => {
         setCurrentPage(page);
-        fetchMovies(page);
+        fetchMovieList(page);
     };
 
     useEffect(() => {
         if (searchTerm) {
-            fetchMovies(currentPage);
+            fetchMovieList(currentPage);
         }
     }, [selectedType]);
 

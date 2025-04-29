@@ -1,16 +1,16 @@
 // src/pages/MovieDetailsPage.jsx
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getMovieDetails } from "../api/omdbApi";
+import { fetchMovieDetails } from "../api/omdbApi"; // ✅ Updated import
 
 const MovieDetailsPage = () => {
     const { id } = useParams();
     const [movie, setMovie] = useState(null);
     const [error, setError] = useState("");
 
-    const fetchMovieDetails = async () => {
+    const fetchMovie = async () => {
         try {
-            const data = await getMovieDetails(id);
+            const data = await fetchMovieDetails(id); // ✅ Updated function name
             if (data.Response === "True") {
                 setMovie(data);
                 setError("");
@@ -23,7 +23,7 @@ const MovieDetailsPage = () => {
     };
 
     useEffect(() => {
-        fetchMovieDetails();
+        fetchMovie();
     }, [id]);
 
     if (error) {
