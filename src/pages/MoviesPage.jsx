@@ -1,7 +1,7 @@
 // src/pages/MoviesPage.jsx
 
 import { useEffect, useState } from 'react';
-import { fetchMovies } from '../api';
+import { fetchMovies } from '../services/api'; // ✅ Correct path
 import { Link } from 'react-router-dom'; // ✅ Added Link
 
 const MoviesPage = () => {

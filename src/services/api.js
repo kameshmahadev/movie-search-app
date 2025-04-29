@@ -14,7 +14,7 @@ export const fetchMovies = async (searchTerm, page = 1, type = '') => {
     }
 };
 
-// ✅ ADD THIS FUNCTION:
+// ✅ JUST ADD THIS PART BELOW
 export const fetchMovieById = async (id) => {
     try {
         const response = await fetch(
