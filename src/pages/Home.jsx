@@ -1,39 +1,82 @@
-// src/pages/HomePage.jsx
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+// src/pages/Home.jsx
+import React, { useState, useEffect } from "react";
+import Movies from "../components/Movies";
+import { fetchMovies } from "../services/api";
 
-const HomePage = () => {
-    const [searchTerm, setSearchTerm] = useState("");
-    const navigate = useNavigate();
+const Home = () => {
+    const [query, setQuery] = useState("batman");
+    const [movies, setMovies] = useState([]);
+    const [page, setPage] = useState(1);
+    const [type, setType] = useState("");
+    const [totalResults, setTotalResults] = useState(0);
+    const [error, setError] = useState("");
 
-    const handleSearch = (e) => {
-        e.preventDefault();
-        if (searchTerm.trim()) {
-            localStorage.setItem("lastSearch", searchTerm.trim()); // ✅ Save search in localStorage
-            navigate(`/movies?search=${encodeURIComponent(searchTerm.trim())}`);
+    const searchMovies = async () => {
+        try {
+            const data = await fetchMovies(query, page, type);
+            if (data.Response === "True") {
+                setMovies(data.Search);
+                setTotalResults(parseInt(data.totalResults));
+                setError("");
+            } else {
+                setError(data.Error);
+                setMovies([]);
+            }
+        } catch (err) {
+            setError("Something went wrong.");
         }
     };
 
+    useEffect(() => {
+        searchMovies();
+    }, [page, type]);
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        setPage(1);
+        searchMovies();
+    };
+
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
-            <h1 className="text-4xl font-bold mb-6">Movie App</h1>
-            <form onSubmit={handleSearch} className="flex space-x-2">
+        <div className="p-4">
+            <form onSubmit={handleSubmit} className="flex gap-2 mb-4">
                 <input
                     type="text"
-                    placeholder="Search for a movie..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="px-4 py-2 border border-gray-300 rounded w-64"
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    className="border p-2 flex-1"
+                    placeholder="Search movies..."
                 />
-                <button
-                    type="submit"
-                    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-                >
-                    Search
-                </button>
+                <select value={type} onChange={(e) => setType(e.target.value)} className="border p-2">
+                    <option value="">All</option>
+                    <option value="movie">Movie</option>
+                    <option value="series">Series</option>
+                    <option value="episode">Episode</option>
+                </select>
+                <button type="submit" className="bg-blue-500 text-white p-2">Search</button>
             </form>
+
+            {error && <div className="text-red-500">{error}</div>}
+            <Movies movies={movies} />
+            <div className="flex justify-between mt-4">
+                <button
+                    onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+                    disabled={page === 1}
+                    className="p-2 bg-gray-300"
+                >
+                    Prev
+                </button>
+                <span>Page {page}</span>
+                <button
+                    onClick={() => setPage((prev) => (page * 10 < totalResults ? prev + 1 : prev))}
+                    disabled={page * 10 >= totalResults}
+                    className="p-2 bg-gray-300"
+                >
+                    Next
+                </button>
+            </div>
         </div>
     );
 };
 
-export default HomePage;
+export default Home;

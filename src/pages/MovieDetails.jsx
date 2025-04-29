@@ -1,31 +1,33 @@
-import React from "react";
+// src/pages/MovieDetail.jsx
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { fetchMovieById } from "../services/api";
 
-const MovieDetails = ({ movie, onAddToFavorites }) => {
+const MovieDetail = () => {
+    const { id } = useParams();
+    const [movie, setMovie] = useState(null);
+
+    useEffect(() => {
+        const getMovie = async () => {
+            const data = await fetchMovieById(id);
+            setMovie(data);
+        };
+        getMovie();
+    }, [id]);
+
+    if (!movie) return <div>Loading...</div>;
+
     return (
-        <div className="flex flex-col md:flex-row gap-6">
-            <img
-                src={movie.Poster !== "N/A" ? movie.Poster : "https://via.placeholder.com/300x450?text=No+Image"}
-                alt={movie.Title}
-                className="w-64 h-auto rounded shadow-lg"
-            />
-            <div className="flex-1">
-                <h1 className="text-3xl font-bold mb-4">{movie.Title}</h1>
-                <p><strong>Year:</strong> {movie.Year}</p>
-                <p><strong>Genre:</strong> {movie.Genre}</p>
-                <p><strong>Director:</strong> {movie.Director}</p>
-                <p><strong>Actors:</strong> {movie.Actors}</p>
-                <p><strong>Plot:</strong> {movie.Plot}</p>
-                <p><strong>IMDB Rating:</strong> {movie.imdbRating}</p>
-
-                <button
-                    onClick={onAddToFavorites}
-                    className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-                >
-                    Add to Favorites
-                </button>
-            </div>
+        <div className="p-4">
+            <h2 className="text-2xl font-bold mb-2">{movie.Title}</h2>
+            <img src={movie.Poster} alt={movie.Title} className="w-64" />
+            <p><strong>Year:</strong> {movie.Year}</p>
+            <p><strong>Genre:</strong> {movie.Genre}</p>
+            <p><strong>Plot:</strong> {movie.Plot}</p>
+            <p><strong>Actors:</strong> {movie.Actors}</p>
+            <p><strong>Rating:</strong> {movie.imdbRating}</p>
         </div>
     );
 };
 
-export default MovieDetails;
+export default MovieDetail;

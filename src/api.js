@@ -1,17 +1,24 @@
-// src/api.js
-const API_KEY = "c6bb7eb3"; // Make sure your API Key is correct.
+// src/services/api.js
+export const API_KEY = "6b651e3b"; // ✅ Your updated key
 
-export const fetchMovies = async (searchTerm) => {
+export const fetchMovies = async (query, page = 1, type = "") => {
     try {
-        const res = await fetch(`https://www.omdbapi.com/?apikey=${API_KEY}&s=${searchTerm}`);
+        const url = `https://www.omdbapi.com/?apikey=${API_KEY}&s=${query}&page=${page}&type=${type}`;
+        const res = await fetch(url);
         const data = await res.json();
-        if (data.Response === "True") {
-            return data.Search; // Very important: return data.Search (array of movies)
-        } else {
-            return []; // No movies found
-        }
+        return data;
     } catch (error) {
-        console.error('Failed to fetch movies:', error);
-        return [];
+        throw new Error("Failed to fetch movies");
+    }
+};
+
+export const fetchMovieById = async (id) => {
+    try {
+        const url = `https://www.omdbapi.com/?apikey=${API_KEY}&i=${id}&plot=full`;
+        const res = await fetch(url);
+        const data = await res.json();
+        return data;
+    } catch (error) {
+        throw new Error("Failed to fetch movie details");
     }
 };
