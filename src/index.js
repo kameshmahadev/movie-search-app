@@ -1,18 +1,12 @@
-// src/api/index.js
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom';
+import App from './App';
+import './index.css'; // If you have TailwindCSS or other styles
 
-const API_KEY = 'c6bb7eb3'; // replace with your API key
-const BASE_URL = 'https://www.omdbapi.com/';
-
-export const fetchMovies = async (searchTerm, page = 1, type = '') => {
-  const url = `${BASE_URL}?apikey=${API_KEY}&s=${searchTerm}&page=${page}${type ? `&type=${type}` : ''}`;
-  const response = await fetch(url);
-  const data = await response.json();
-  return data;
-};
-
-export const fetchMovieById = async (id) => {
-  const url = `${BASE_URL}?apikey=${API_KEY}&i=${id}&plot=full`;
-  const response = await fetch(url);
-  const data = await response.json();
-  return data;
-};
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <BrowserRouter>
+    <App />
+  </BrowserRouter>
+);
