@@ -1,14 +1,15 @@
-// src/components/MovieCard.jsx
-import React from "react";
-import { Link } from "react-router-dom";
+import React from 'react';
+import { Link } from 'react-router-dom';
 
 const MovieCard = ({ movie }) => {
     return (
-        <Link to={`/movie/${movie.imdbID}`} className="border p-2 hover:shadow-lg">
-            <img src={movie.Poster} alt={movie.Title} className="w-full h-64 object-cover" />
-            <h3 className="font-bold">{movie.Title}</h3>
-            <p>{movie.Year}</p>
-        </Link>
+        <div className="border border-gray-300 p-2 rounded">
+            <Link to={`/movie/${movie.imdbID}`}>
+                <img src={movie.Poster} alt={movie.Title} className="w-full h-64 object-cover mb-2" />
+                <h2 className="text-lg font-semibold">{movie.Title}</h2>
+                <p className="text-sm text-gray-600">{movie.Year}</p>
+            </Link>
+        </div>
     );
 };
 

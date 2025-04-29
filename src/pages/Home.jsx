@@ -1,79 +1,49 @@
-// src/pages/Home.jsx
-import React, { useState, useEffect } from "react";
-import Movies from "../components/Movies";
-import { fetchMovies } from "../services/api";
+import React, { useState } from 'react';
+import { fetchMovies } from '../services/api';
+import MovieCard from '../components/MovieCard';
 
 const Home = () => {
-    const [query, setQuery] = useState("batman");
+    const [searchTerm, setSearchTerm] = useState('');
     const [movies, setMovies] = useState([]);
-    const [page, setPage] = useState(1);
-    const [type, setType] = useState("");
-    const [totalResults, setTotalResults] = useState(0);
-    const [error, setError] = useState("");
+    const [error, setError] = useState('');
 
-    const searchMovies = async () => {
+    const handleSearch = async (e) => {
+        e.preventDefault();
+        if (!searchTerm) return;
         try {
-            const data = await fetchMovies(query, page, type);
-            if (data.Response === "True") {
+            const data = await fetchMovies(searchTerm);
+            if (data.Response === 'True') {
                 setMovies(data.Search);
-                setTotalResults(parseInt(data.totalResults));
-                setError("");
+                setError('');
             } else {
-                setError(data.Error);
                 setMovies([]);
+                setError(data.Error);
             }
         } catch (err) {
-            setError("Something went wrong.");
+            setError('Something went wrong');
         }
-    };
-
-    useEffect(() => {
-        searchMovies();
-    }, [page, type]);
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        setPage(1);
-        searchMovies();
     };
 
     return (
         <div className="p-4">
-            <form onSubmit={handleSubmit} className="flex gap-2 mb-4">
+            <h1 className="text-3xl font-bold text-center mb-4">Movie Search App</h1>
+            <form onSubmit={handleSearch} className="flex justify-center mb-4">
                 <input
                     type="text"
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
-                    className="border p-2 flex-1"
                     placeholder="Search movies..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="border border-gray-400 p-2 w-1/2"
                 />
-                <select value={type} onChange={(e) => setType(e.target.value)} className="border p-2">
-                    <option value="">All</option>
-                    <option value="movie">Movie</option>
-                    <option value="series">Series</option>
-                    <option value="episode">Episode</option>
-                </select>
-                <button type="submit" className="bg-blue-500 text-white p-2">Search</button>
+                <button type="submit" className="bg-blue-500 text-white p-2 ml-2">
+                    Search
+                </button>
             </form>
-
-            {error && <div className="text-red-500">{error}</div>}
-            <Movies movies={movies} />
-            <div className="flex justify-between mt-4">
-                <button
-                    onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
-                    disabled={page === 1}
-                    className="p-2 bg-gray-300"
-                >
-                    Prev
-                </button>
-                <span>Page {page}</span>
-                <button
-                    onClick={() => setPage((prev) => (page * 10 < totalResults ? prev + 1 : prev))}
-                    disabled={page * 10 >= totalResults}
-                    className="p-2 bg-gray-300"
-                >
-                    Next
-                </button>
+            {error && <p className="text-red-500 text-center">{error}</p>}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {movies.map((movie) => (
+                    <MovieCard key={movie.imdbID} movie={movie} />
+                ))}
             </div>
         </div>
     );
