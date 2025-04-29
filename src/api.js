@@ -1,5 +1,6 @@
 // src/services/api.js
-export const API_KEY = "6b651e3b"; // ✅ Your updated key
+
+const API_KEY = import.meta.env.VITE_OMDB_API_KEY;
 
 export const fetchMovies = async (query, page = 1, type = "") => {
     try {
