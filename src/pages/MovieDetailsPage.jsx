@@ -1,9 +1,10 @@
 // src/pages/MovieDetailsPage.jsx
+
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom"; // ❌ removed useLocation
+import { useParams, useNavigate } from "react-router-dom";
 import Loading from "../components/Loading";
 
-const API_KEY = "c6bb7eb3";
+const API_KEY = "c6bb7eb3"; // Your API Key
 
 const MovieDetailsPage = () => {
     const { id } = useParams();

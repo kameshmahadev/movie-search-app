@@ -1,4 +1,5 @@
 // src/App.jsx
+
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 import HomePage from "./pages/HomePage";
@@ -14,7 +15,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/movies" element={<MoviesPage />} />
-        <Route path="/movie/:id" element={<MovieDetailsPage />} />
+        <Route path="/movie/:id" element={<MovieDetailsPage />} /> {/* ✅ Correct path /movie/:id */}
         <Route path="/favorites" element={<FavoritesPage />} />
         <Route
           path="*"
