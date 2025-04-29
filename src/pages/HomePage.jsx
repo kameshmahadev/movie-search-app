@@ -1,39 +1,50 @@
-// src/pages/HomePage.jsx
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import MovieCard from "../components/MovieCard";
+import { searchMovies } from "../services/api";
 
-const HomePage = () => {
-    const [searchTerm, setSearchTerm] = useState("");
-    const navigate = useNavigate();
+function HomePage() {
+    const [query, setQuery] = useState("");
+    const [movies, setMovies] = useState([]);
+    const [error, setError] = useState("");
 
-    const handleSearch = (e) => {
+    const handleSearch = async (e) => {
         e.preventDefault();
-        if (searchTerm.trim()) {
-            localStorage.setItem("lastSearch", searchTerm.trim()); // ✅ Save search in localStorage
-            navigate(`/movies?search=${encodeURIComponent(searchTerm.trim())}`);
+        try {
+            const data = await searchMovies(query);
+            if (data.Response === "True") {
+                setMovies(data.Search);
+                setError("");
+            } else {
+                setMovies([]);
+                setError(data.Error);
+            }
+        } catch (err) {
+            setError("Something went wrong!");
         }
     };
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
-            <h1 className="text-4xl font-bold mb-6">Movie App</h1>
-            <form onSubmit={handleSearch} className="flex space-x-2">
+        <div className="p-4">
+            <form onSubmit={handleSearch} className="flex mb-4">
                 <input
                     type="text"
-                    placeholder="Search for a movie..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="px-4 py-2 border border-gray-300 rounded w-64"
+                    className="border p-2 flex-grow"
+                    placeholder="Search movies..."
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
                 />
-                <button
-                    type="submit"
-                    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-                >
-                    Search
-                </button>
+                <button className="bg-blue-500 text-white p-2">Search</button>
             </form>
+
+            {error && <p className="text-red-500">{error}</p>}
+
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {movies.map((movie) => (
+                    <MovieCard key={movie.imdbID} movie={movie} />
+                ))}
+            </div>
         </div>
     );
-};
+}
 
 export default HomePage;
