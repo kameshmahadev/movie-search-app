@@ -5,7 +5,11 @@ import { Link } from "react-router-dom";
 
 const MovieCard = ({ movie, addToFavorites, removeFromFavorites, isFavorite }) => {
     const handleFavoriteClick = () => {
-        isFavorite ? removeFromFavorites(movie.imdbID) : addToFavorites(movie);
+        if (isFavorite) {
+            removeFromFavorites(movie.imdbID);
+        } else {
+            addToFavorites(movie);
+        }
     };
 
     return (
@@ -21,7 +25,8 @@ const MovieCard = ({ movie, addToFavorites, removeFromFavorites, isFavorite }) =
             </Link>
             <button
                 onClick={handleFavoriteClick}
-                className={`mt-2 px-3 py-1 rounded ${isFavorite ? "bg-red-500 text-white" : "bg-green-500 text-white"}`}
+                className={`mt-2 px-3 py-1 rounded ${isFavorite ? "bg-red-500" : "bg-green-500"
+                    } text-white`}
             >
                 {isFavorite ? "Remove Favorite" : "Add to Favorites"}
             </button>
