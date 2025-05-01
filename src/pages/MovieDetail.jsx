@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { fetchMovieDetails } from '../api/omdbApi';
+import FavoriteButton from '../components/FavoriteButton';
 
 const MovieDetail = () => {
     const { id } = useParams();
@@ -37,6 +38,9 @@ const MovieDetail = () => {
                     <p><strong>Actors:</strong> {movie.Actors}</p>
                     <p><strong>Plot:</strong> {movie.Plot}</p>
                     <p><strong>IMDB Rating:</strong> {movie.imdbRating}</p>
+                    <div className="mt-4">
+                        <FavoriteButton movie={movie} />
+                    </div>
                 </div>
             </div>
         </div>

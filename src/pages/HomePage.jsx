@@ -1,4 +1,6 @@
+// src/pages/HomePage.jsx
 import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { fetchMovies } from "../api/omdbApi";
 import SearchBar from "../components/SearchBar";
 import FilterDropdown from "../components/FilterDropdown";
@@ -6,10 +8,14 @@ import MovieCard from "../components/MovieCard";
 import Pagination from "../components/Pagination";
 
 const HomePage = () => {
-    const [searchTerm, setSearchTerm] = useState("");
-    const [selectedType, setSelectedType] = useState("");
+    const [searchParams, setSearchParams] = useSearchParams();
+    const query = searchParams.get("q") || "";
+    const type = searchParams.get("type") || "";
+    const page = parseInt(searchParams.get("page") || "1");
+
+    const [searchTerm, setSearchTerm] = useState(query);
+    const [selectedType, setSelectedType] = useState(type);
     const [movies, setMovies] = useState([]);
-    const [currentPage, setCurrentPage] = useState(1);
     const [totalResults, setTotalResults] = useState(0);
     const [error, setError] = useState("");
     const [favorites, setFavorites] = useState(() => {
@@ -17,9 +23,11 @@ const HomePage = () => {
         return stored ? JSON.parse(stored) : [];
     });
 
-    const fetchMovieList = async (page = 1) => {
+    const fetchMovieList = async () => {
+        if (!query) return;
+
         try {
-            const data = await fetchMovies(searchTerm, selectedType, page);
+            const data = await fetchMovies(query, type, page);
             if (data.Response === "True") {
                 setMovies(data.Search);
                 setTotalResults(Number(data.totalResults));
@@ -37,13 +45,19 @@ const HomePage = () => {
 
     const handleSearch = (e) => {
         e.preventDefault();
-        setCurrentPage(1);
-        fetchMovieList(1);
+        setSearchParams({ q: searchTerm, type: selectedType, page: 1 });
+        localStorage.setItem(
+            "lastSearch",
+            JSON.stringify({ q: searchTerm, type: selectedType, page: 1 })
+        );
     };
 
-    const handlePageChange = (page) => {
-        setCurrentPage(page);
-        fetchMovieList(page);
+    const handlePageChange = (newPage) => {
+        setSearchParams({ q: query, type: type, page: newPage });
+        localStorage.setItem(
+            "lastSearch",
+            JSON.stringify({ q: query, type, page: newPage })
+        );
     };
 
     const addToFavorites = (movie) => {
@@ -59,10 +73,8 @@ const HomePage = () => {
     };
 
     useEffect(() => {
-        if (searchTerm) {
-            fetchMovieList(currentPage);
-        }
-    }, [selectedType]);
+        fetchMovieList(); // always fetch when query/type/page changes
+    }, [query, type, page]);
 
     useEffect(() => {
         localStorage.setItem("favorites", JSON.stringify(favorites));
@@ -79,7 +91,14 @@ const HomePage = () => {
             />
             <FilterDropdown
                 selectedType={selectedType}
-                setSelectedType={setSelectedType}
+                setSelectedType={(type) => {
+                    setSelectedType(type);
+                    setSearchParams({ q: query, type, page: 1 });
+                    localStorage.setItem(
+                        "lastSearch",
+                        JSON.stringify({ q: query, type, page: 1 })
+                    );
+                }}
             />
             {error && <p className="text-red-500 text-center mt-4">{error}</p>}
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-6">
@@ -95,7 +114,7 @@ const HomePage = () => {
             </div>
             {movies.length > 0 && (
                 <Pagination
-                    currentPage={currentPage}
+                    currentPage={page}
                     totalPages={totalPages}
                     onPageChange={handlePageChange}
                 />

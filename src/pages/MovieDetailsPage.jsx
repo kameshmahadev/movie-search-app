@@ -1,62 +1,43 @@
-// src/pages/MovieDetailsPage.jsx
-
-import React, { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
-import { fetchMovieDetails } from "../api/omdbApi";
+import React from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const MovieDetailsPage = () => {
-    const { id } = useParams();
-    const [movie, setMovie] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState("");
+    const location = useLocation();
+    const navigate = useNavigate();
 
-    useEffect(() => {
-        const loadMovie = async () => {
-            try {
-                const data = await fetchMovieDetails(id);
-                setMovie(data);
-                setError("");
-            } catch (err) {
-                setError("Failed to fetch movie details. Try again.");
-            } finally {
-                setLoading(false);
-            }
-        };
+    // Safely access movie from location.state
+    const movie = location?.state?.movie;
 
-        loadMovie();
-    }, [id]);
-
-    if (loading) {
-        return <div className="text-center mt-10 text-lg animate-pulse">Loading movie details...</div>;
-    }
-
-    if (error) {
-        return <div className="text-center text-red-500 mt-10">{error}</div>;
+    if (!movie) {
+        toast.error("Movie details not found. Redirecting to homepage...");
+        setTimeout(() => navigate("/"), 3000); // redirect after 3 sec
+        return (
+            <div className="flex justify-center items-center h-screen">
+                <p className="text-lg font-semibold">Redirecting...</p>
+            </div>
+        );
     }
 
     return (
-        <div className="max-w-5xl mx-auto p-6">
-            <div className="mb-4 flex justify-between">
-                <Link to="/" className="text-blue-500 underline">← Back to Search</Link>
-                <Link to="/favorites" className="text-blue-500 underline">❤️ Back to Favorites</Link>
-            </div>
-            <div className="bg-white rounded-lg shadow-lg p-6 grid md:grid-cols-2 gap-6">
+        <div className="max-w-4xl mx-auto p-4">
+            <button
+                onClick={() => navigate(-1)}
+                className="mb-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            >
+                ← Back
+            </button>
+
+            <div className="bg-white rounded-lg shadow-md p-6">
+                <h2 className="text-2xl font-bold mb-4">{movie.Title}</h2>
                 <img
-                    src={movie.Poster !== "N/A" ? movie.Poster : "/no-image.png"}
+                    src={movie.Poster !== "N/A" ? movie.Poster : "/placeholder.jpg"}
                     alt={movie.Title}
-                    className="rounded w-full h-auto object-cover"
+                    className="w-full max-w-xs mx-auto mb-4"
                 />
-                <div>
-                    <h2 className="text-2xl font-bold mb-2">{movie.Title}</h2>
-                    <p><strong>Year:</strong> {movie.Year}</p>
-                    <p><strong>Genre:</strong> {movie.Genre}</p>
-                    <p><strong>Director:</strong> {movie.Director}</p>
-                    <p><strong>Actors:</strong> {movie.Actors}</p>
-                    <p className="mt-4"><strong>Plot:</strong> {movie.Plot}</p>
-                    <p className="mt-2"><strong>IMDB Rating:</strong> ⭐ {movie.imdbRating}</p>
-                    <p><strong>Language:</strong> {movie.Language}</p>
-                    <p><strong>Runtime:</strong> {movie.Runtime}</p>
-                </div>
+                <p><strong>Year:</strong> {movie.Year}</p>
+                <p><strong>Type:</strong> {movie.Type}</p>
+                <p><strong>IMDb ID:</strong> {movie.imdbID}</p>
             </div>
         </div>
     );
