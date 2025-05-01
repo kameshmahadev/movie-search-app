@@ -27,5 +27,5 @@ A React-based Movie Search App that fetches data from the OMDB API. Users can se
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/yourusername/movie-search-app.git
+   git clone https://github.com/kameshmahadev/movie-search-app.git
    cd movie-search-app
