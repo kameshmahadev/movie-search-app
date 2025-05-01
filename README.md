@@ -1,78 +1,31 @@
 # 🎬 Movie Search App
 
-A full-featured movie search application built using ReactJS, TailwindCSS, and the OMDB API.
-
-## ✨ Features
-
-- 🔍 **Search** movies, series, and episodes by title.
-- 🧹 **Filter** by type (movie, series, episode).
-- 🔄 **Pagination** for browsing large results.
-- 📄 **Detailed movie page** with plot, cast, director, ratings, etc.
-- ❤️ **Add to Favorites** and manage your favorite movies.
-- ⚡ **Loading indicators** and graceful **error handling**.
-- 📱 Fully **responsive** and mobile-friendly design.
+A React-based Movie Search App that fetches data from the OMDB API. Users can search movies, view detailed information, paginate results, filter by type, and manage a list of favorites — all with a clean Tailwind CSS design.
 
 ---
 
-## 🛠 Tech Stack
+## 🚀 Features
 
-- ReactJS
-- React Router
-- TailwindCSS
-- JavaScript (ES6)
-- OMDB API
-
----
-
-## 🚀 Installation and Setup
-
-1. **Clone the repository**:
-    ```bash
-    git clone https://github.com/your-username/movie-search-app.git
-    cd movie-search-app
-    ```
-
-2. **Install dependencies**:
-    ```bash
-    npm install
-    ```
-
-3. **Configure OMDB API Key**:
-    - Open `src/api.js`
-    - Replace the API key:
-      ```javascript
-      export const API_KEY = "your_omdb_api_key_here";
-      ```
-
-4. **Run the application locally**:
-    ```bash
-    npm run dev
-    ```
-
-5. Open in your browser at [http://localhost:5173](http://localhost:5173) (if using Vite).
+- 🔎 **Search** for movies by title using the OMDB API
+- 🎭 **Filter** by type: All, Movie, Series, Episode
+- 📃 **Pagination** with URL query sync (e.g., `?page=1`)
+- 📝 **Movie Details Page** showing title, year, genre, actors, and plot
+- ⭐ **Favorites** feature with Add/Remove toggle (stored in localStorage)
+- 📱 **Responsive Design** using Tailwind CSS
+- 🔗 **React Router** for smooth page navigation
 
 ---
 
-## 📷 Screenshots
+## 📸 Screenshots
 
-### Home / Movies Page
-![Movies Page Screenshot](screenshots/movies-page.png)
-
-### Movie Details Page
-![Movie Details Screenshot](screenshots/movie-details-page.png)
-
-### Favorites Feature
-![Favorites Screenshot](screenshots/favorites.png)
-
-*(Add screenshots in a `/screenshots` folder inside your project.)*
+> Add screenshots here if desired (e.g., Home Page, Movie Details, Favorites Page)
 
 ---
 
-## 🔗 Live Demo
+## ⚙️ Installation & Setup
 
-(Coming soon if you deploy it — for example using Vercel or Netlify.)
+1. **Clone the repository:**
 
----
-
-## 📚 Folder Structure
-
+   ```bash
+   git clone https://github.com/yourusername/movie-search-app.git
+   cd movie-search-app

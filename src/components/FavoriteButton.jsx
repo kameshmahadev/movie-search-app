@@ -1,38 +1,40 @@
 // src/components/FavoriteButton.jsx
-import React from "react";
-import useFavorites from "../hooks/useFavorites";
+import React, { useContext } from "react";
+import { FavoritesContext } from "../App";
 
-const FavoriteButton = ({ movie, showRemove = false }) => {
-    const { favorites, addFavorite, removeFavorite } = useFavorites();
+const FavoriteButton = ({ movie, showRemoveButton }) => {
+    const { favorites, setFavorites } = useContext(FavoritesContext);
 
-    const isFavorite = favorites.some((fav) => fav.imdbID === movie.imdbID);
+    const isFavorite = favorites.some((m) => m.imdbID === movie.imdbID);
 
-    const toggleFavorite = () => {
-        if (isFavorite) {
-            removeFavorite(movie.imdbID);
-        } else {
-            addFavorite(movie);
+    const addToFavorites = () => {
+        if (!isFavorite) {
+            setFavorites([...favorites, movie]);
         }
     };
 
-    if (showRemove) {
+    const removeFromFavorites = () => {
+        setFavorites(favorites.filter((m) => m.imdbID !== movie.imdbID));
+    };
+
+    if (showRemoveButton) {
         return (
             <button
-                onClick={() => removeFavorite(movie.imdbID)}
-                className="px-3 py-1 rounded text-sm bg-red-600 text-white"
+                onClick={removeFromFavorites}
+                className="w-full bg-red-500 text-white px-3 py-2 rounded hover:bg-red-600 transition"
             >
-                ❌ Remove
+                Remove from Favorites
             </button>
         );
     }
 
     return (
         <button
-            onClick={toggleFavorite}
-            className={`px-3 py-1 rounded text-sm ${isFavorite ? "bg-red-500 text-white" : "bg-gray-300 text-black"
-                }`}
+            onClick={isFavorite ? removeFromFavorites : addToFavorites}
+            className={`w-full ${isFavorite ? "bg-red-500 hover:bg-red-600" : "bg-green-500 hover:bg-green-600"
+                } text-white px-3 py-2 rounded transition`}
         >
-            {isFavorite ? "❤️ Favorited" : "🤍 Add to Favorites"}
+            {isFavorite ? "Remove Favorite" : "Add to Favorites"}
         </button>
     );
 };

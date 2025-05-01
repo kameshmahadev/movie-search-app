@@ -1,20 +1,44 @@
-import React from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+// src/pages/MovieDetailsPage.jsx
+
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { fetchMovieDetails } from "../api/omdbApi";
 import { toast } from "react-toastify";
 
 const MovieDetailsPage = () => {
-    const location = useLocation();
+    const { id } = useParams(); // Get IMDb ID from route
     const navigate = useNavigate();
+    const [movie, setMovie] = useState(null);
+    const [error, setError] = useState("");
 
-    // Safely access movie from location.state
-    const movie = location?.state?.movie;
+    useEffect(() => {
+        const loadMovie = async () => {
+            try {
+                const data = await fetchMovieDetails(id);
+                setMovie(data);
+            } catch (err) {
+                console.error(err);
+                setError("Movie not found.");
+                toast.error("Movie not found. Redirecting to homepage...");
+                setTimeout(() => navigate("/"), 3000);
+            }
+        };
 
-    if (!movie) {
-        toast.error("Movie details not found. Redirecting to homepage...");
-        setTimeout(() => navigate("/"), 3000); // redirect after 3 sec
+        loadMovie();
+    }, [id, navigate]);
+
+    if (error) {
         return (
             <div className="flex justify-center items-center h-screen">
                 <p className="text-lg font-semibold">Redirecting...</p>
+            </div>
+        );
+    }
+
+    if (!movie) {
+        return (
+            <div className="flex justify-center items-center h-screen">
+                <p className="text-lg font-semibold">Loading...</p>
             </div>
         );
     }
@@ -35,9 +59,14 @@ const MovieDetailsPage = () => {
                     alt={movie.Title}
                     className="w-full max-w-xs mx-auto mb-4"
                 />
-                <p><strong>Year:</strong> {movie.Year}</p>
-                <p><strong>Type:</strong> {movie.Type}</p>
-                <p><strong>IMDb ID:</strong> {movie.imdbID}</p>
+                <div className="space-y-2 text-gray-700">
+                    <p><strong>Year:</strong> {movie.Year}</p>
+                    <p><strong>Genre:</strong> {movie.Genre}</p>
+                    <p><strong>Director:</strong> {movie.Director}</p>
+                    <p><strong>Actors:</strong> {movie.Actors}</p>
+                    <p><strong>Plot:</strong> {movie.Plot}</p>
+                    <p><strong>IMDB Rating:</strong> {movie.imdbRating}</p>
+                </div>
             </div>
         </div>
     );
