@@ -1,31 +1,37 @@
 # 🎬 Movie Search App
 
-A React-based Movie Search App that fetches data from the OMDB API. Users can search movies, view detailed information, paginate results, filter by type, and manage a list of favorites — all with a clean Tailwind CSS design.
+A fully-featured React application that allows users to search, browse, and manage their favorite movies using the [OMDB API](http://www.omdbapi.com/). Built with clean UI, responsive design, and smooth user experience using **React**, **React Router**, and **Tailwind CSS**.
 
 ---
 
 ## 🚀 Features
 
-- 🔎 **Search** for movies by title using the OMDB API
-- 🎭 **Filter** by type: All, Movie, Series, Episode
-- 📃 **Pagination** with URL query sync (e.g., `?page=1`)
-- 📝 **Movie Details Page** showing title, year, genre, actors, and plot
-- ⭐ **Favorites** feature with Add/Remove toggle (stored in localStorage)
-- 📱 **Responsive Design** using Tailwind CSS
-- 🔗 **React Router** for smooth page navigation
+✅ **Search Movies or Series** by title  
+✅ **Filter by Type** (movie, series, episode) using OMDB API endpoint  
+✅ **Paginated Results** for easy browsing  
+✅ **View Details** of each movie (via dynamic routing)  
+✅ **Add/Remove Favorites** with localStorage persistence  
+✅ **Toasts for Actions & Errors** using `react-toastify`  
+✅ **Loading Spinner** while fetching data  
+✅ **Responsive Design** across devices  
 
 ---
 
-## 📸 Screenshots
+## 🛠️ Tech Stack
 
-> Add screenshots here if desired (e.g., Home Page, Movie Details, Favorites Page)
+- ⚛️ React  
+- 🔀 React Router DOM  
+- 💨 Tailwind CSS  
+- 🌐 OMDB API  
+- 🧠 localStorage (favorites)
+- 🔔 react-toastify (toasts)
 
 ---
 
-## ⚙️ Installation & Setup
+## 📂 Project Setup
 
-1. **Clone the repository:**
-
-   ```bash
-   git clone https://github.com/kameshmahadev/movie-search-app.git
-   cd movie-search-app
+```bash
+git clone https://github.com/kameshmahadev/movie-search-app.git
+cd movie-search-app
+npm install
+npm start
